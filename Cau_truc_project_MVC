@@ -1,0 +1,123 @@
+# TÌM HIỂU CẤU TRÚC PROJECT ASP.NET CORE (MVC/API)
+## 1. Giới thiệu
+ASP.NET Core là một framework của Microsoft dùng để xây dựng ứng dụng web, bao gồm:
+* Web API (trả dữ liệu JSON)
+* MVC (có giao diện HTML)
+Trong đó:
+* API: dùng cho backend, mobile, frontend gọi
+* MVC: có thêm phần giao diện (View)
+## 2. Cấu trúc project cơ bản (Web API)
+Một project ASP.NET Core API thường có cấu trúc như sau:
+* Controllers/
+* Models/
+* Data/
+* Migrations/
+* appsettings.json
+* Program.cs
+* *.csproj
+## 3. Giải thích chi tiết từng thành phần
+### 3.1 Controllers/ Đây là nơi chứa các API (endpoint).
+Ví dụ:
+StudentsController.cs
+Chức năng:
+* Nhận request từ client
+* Xử lý logic
+* Trả response (JSON)
+Ví dụ:
+* GET: lấy dữ liệu
+* POST: thêm dữ liệu
+* PUT: cập nhật
+* DELETE: xoá
+### 3.2 Models/
+Chứa các class mô tả dữ liệu.
+Ví dụ:
+public class Student
+{
+public int Id { get; set; }
+public string Name { get; set; }
+}
+Ý nghĩa:
+* Class = bảng trong database
+* Property = cột
+### 3.3 Data/
+Chứa DbContext – lớp kết nối database.
+Ví dụ:
+public class AppDbContext : DbContext
+{
+public DbSet<Student> Students { get; set; }
+}
+Chức năng:
+* Quản lý kết nối DB
+* Thao tác dữ liệu thông qua Entity Framework Core
+### 3.4 Migrations/
+Thư mục do Entity Framework Core tạo ra.
+Chức năng:
+* Lưu lịch sử thay đổi database
+* Tạo và cập nhật database
+Lệnh sử dụng:
+* dotnet ef migrations add Init
+* dotnet ef database update
+### 3.5 appsettings.json
+File cấu hình của project.
+Chứa:
+* Connection String (kết nối database)
+* Các cấu hình khác
+Ví dụ:
+"ConnectionStrings": {
+"DefaultConnection": "Server=.;Database=StudentDb;Trusted_Connection=True;"
+}
+### 3.6 Program.cs (Quan trọng nhất)
+Đây là file chạy chính của ứng dụng.
+Chức năng:
+* Cấu hình dịch vụ (Services)
+* Cấu hình middleware
+* Map route
+Ví dụ:
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+var app = builder.Build();
+app.MapControllers();
+app.Run();
+### 3.7 File .csproj
+File cấu hình project.
+Chứa:
+* Thư viện sử dụng
+* Phiên bản .NET
+* Package
+## 4. Luồng hoạt động của hệ thống
+Client (Postman / Frontend)
+↓
+Controller (API)
+↓
+DbContext
+↓
+Entity Framework Core
+↓
+Database (SQL Server)
+## 5. Routing (định tuyến)
+Routing giúp ánh xạ URL tới controller.
+Ví dụ:
+[Route("api/[controller]")]
+→ URL:
+api/students
+## 6. Middleware
+Middleware là các lớp xử lý request trước khi đến controller.
+Ví dụ trong Program.cs:
+app.UseRouting();
+app.UseAuthorization();
+Luồng:
+Request → Middleware → Controller → Response
+## 7. Sự khác nhau giữa MVC và API
+### MVC:
+* Có View (giao diện)
+* Trả về HTML
+### API:
+* Không có giao diện
+* Trả về JSON
+## 8. Kết luận
+Cấu trúc project ASP.NET Core giúp tổ chức code rõ ràng:
+* Controllers: xử lý API
+* Models: định nghĩa dữ liệu
+* Data: kết nối database
+* Migrations: quản lý DB
+* Program.cs: cấu hình và chạy ứng dụng
